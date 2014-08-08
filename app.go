@@ -1,7 +1,7 @@
 package app
 
-import "fmt"
 import "net/http"
+import "html/template"
 
 func init() {
 
@@ -9,7 +9,15 @@ func init() {
 	
 }
 
+
 func frontPage(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello world")
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	var frontTemplate = template.Must(template.ParseFiles("templates/base.html", "templates/index.html"))
+
+	templateValues := make(map[string]interface{})
+
+	if err := frontTemplate.Execute(w, templateValues); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 
 }
